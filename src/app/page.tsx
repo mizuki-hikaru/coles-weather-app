@@ -15,11 +15,9 @@ export default async function Home({searchParams}: {searchParams: {city?: string
         if (res.ok) {
             weatherData = await res.json();
         } else {
-            console.log(await res.text());
             error = await res.json();
         }
     } catch(e) {
-        console.log(e);
         error = {
             status_code: 500,
             message: "Internal server error",

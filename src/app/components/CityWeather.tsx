@@ -12,7 +12,8 @@ type CityWeatherProps = {
 
 export default function CityWeather({ initialCityName, initialWeatherData, initialError }: CityWeatherProps) {
     // Initialise state with data from SSR
-    const [cityName, setCityName] = useState(initialCityName);
+    const [cityName, setCityName] = useState("");
+    const [displayCityName, setDisplayCityName] = useState(initialCityName);
     const [weatherData, setWeatherData] = useState<WeatherData | null>(initialWeatherData);
     const [error, setError] = useState<string | null>(initialError);
 
@@ -33,6 +34,7 @@ export default function CityWeather({ initialCityName, initialWeatherData, initi
             const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/weather?city=${encodeURIComponent(cityName)}`);
             if (response.ok) {
                 setWeatherData(await response.json());
+                setDisplayCityName(cityName);
             } else {
                 setError((await response.json()).message);
             }
@@ -66,7 +68,7 @@ export default function CityWeather({ initialCityName, initialWeatherData, initi
             {/* Display weather data */}
             {weatherData && (
                 <div className={styles.weatherData}>
-                    <h2 className={styles.weatherCity}>Weather for {cityName}</h2>
+                    <h2 className={styles.weatherCity}>Weather for {displayCityName}</h2>
                     <div className={styles.weatherImg}>
                         <img
                             src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
