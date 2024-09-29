@@ -1,5 +1,4 @@
 import styles from './page.module.css';
-import { useState } from 'react';
 import CityWeather from './components/CityWeather';
 import { InvalidCityNameError } from './types';
 import { fetchWeatherData } from './utils';
