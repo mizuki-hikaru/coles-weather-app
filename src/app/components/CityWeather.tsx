@@ -2,8 +2,7 @@
 
 import styles from './CityWeather.module.css';
 import { ChangeEvent, useState } from 'react';
-import { fetchWeatherData } from '../utils';
-import { WeatherData, InvalidCityNameError } from '../types';
+import { WeatherData } from '../../types';
 
 type CityWeatherProps = {
     initialCityName: string;
@@ -24,13 +23,22 @@ export default function CityWeather({ initialCityName, initialWeatherData, initi
     };
 
     const fetchWeather = async () => {
+        if (!navigator.onLine) {
+            setError("You are offline. Weather data cannot be updated.");
+            return;
+        }
         setLoading(true);
         setError(null); // Reset error state before fetching
         try {
-            setWeatherData(await fetchWeatherData(initialCityName));
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/weather?city=${encodeURIComponent(cityName)}`);
+            if (response.ok) {
+                setWeatherData(await response.json());
+            } else {
+                setError((await response.json()).message);
+            }
         } catch (error) {
-            if (error instanceof InvalidCityNameError) {
-                setError(error.message);
+            if (error instanceof TypeError) {
+                setError('It seems you are offline or the network is down. Weather data cannot be updated.');
             } else {
                 setError('Failed to fetch weather data');
             }
@@ -59,12 +67,14 @@ export default function CityWeather({ initialCityName, initialWeatherData, initi
             {weatherData && (
                 <div className={styles.weatherData}>
                     <h2 className={styles.weatherCity}>Weather for {cityName}</h2>
+                    <div className={styles.weatherImg}>
+                        <img
+                            src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
+                            alt="Weather Icon"
+                        />
+                    </div>
                     <p className={styles.weatherTemp}>Temperature: {weatherData.temperature}°C</p>
                     <p className={styles.weatherCond}>Condition: {weatherData.description}</p>
-                    <img
-                        src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
-                        alt="Weather Icon"
-                    />
                 </div>
             )}
         </div>

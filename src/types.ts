@@ -4,4 +4,7 @@ export interface WeatherData {
     icon: string;
 }
 
-export class InvalidCityNameError extends Error {}
+export interface WeatherError {
+    status_code: number;
+    message: string;
+}
