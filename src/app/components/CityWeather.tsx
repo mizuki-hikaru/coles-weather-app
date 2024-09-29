@@ -3,7 +3,7 @@
 import styles from './CityWeather.module.css';
 import { ChangeEvent, useState } from 'react';
 import { fetchWeatherData } from '../utils';
-import { WeatherData } from '../types';
+import { WeatherData, InvalidCityNameError } from '../types';
 
 type CityWeatherProps = {
     initialCityName: string;
