@@ -27,10 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     if (!response.ok) {
-        if (response.status == 404) {
-            console.log(`404: ${city} ${await response.text()}`);
-        }
-        if (false && response.status === 404 && (await response.text() === 'city not found')) {
+        if (response.status === 404 && (await response.json()).message === 'city not found') {
             res.status(404).json({
                 status_code: 404,
                 message: `The city "${city}" was not found.`
